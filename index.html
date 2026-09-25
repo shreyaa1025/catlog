@@ -35,9 +35,9 @@
 
     /* Offer Admin Box */
     .offer-admin-box {
-      background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px; margin-bottom: 15px;
+      background: #fff7ed; border: 1px solid #ffedd5; padding: 12px; border-radius: 8px; margin-bottom: 15px;
     }
-    .offer-admin-box h4 { font-size: 12px; color: #0369a1; margin-bottom: 6px; text-transform: uppercase; }
+    .offer-admin-box h4 { font-size: 12px; color: #c2410c; margin-bottom: 8px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
 
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 10px; }
     label { font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 3px; }
@@ -54,8 +54,9 @@
     .btn-backup { background: #0288d1; }
     .btn-restore { background: #0f766e; }
     .btn-clear { background: #64748b; }
+    .btn-deal { background: #ea580c; }
 
-    /* Shop Header (BIGGER HEADING) */
+    /* Shop Header */
     .shop-header {
       background: linear-gradient(135deg, #0f172a, #1e3a8a);
       color: #ffffff; max-width: 900px; margin: 0 auto; padding: 16px 12px;
@@ -68,20 +69,43 @@
     @media (max-width: 500px) { .shop-title { font-size: 18px; } }
     .shop-info { font-size: 11px; color: #cbd5e1; font-weight: 500; margin-top: 4px; line-height: 1.3; }
 
-    /* Running Offer Marquee Banner */
-    .marquee-container {
-      max-width: 900px; margin: 10px auto; overflow: hidden; background: #1e3a8a;
-      border-radius: 8px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); border: 1px solid #3b82f6;
+    /* Flipkart-Style Deal Card Banner */
+    .deal-card-container {
+      max-width: 900px; margin: 10px auto; padding: 0 10px; display: none;
     }
-    .marquee-content {
-      display: inline-block; white-space: nowrap; padding: 10px 0; color: #ffffff;
-      font-weight: 800; font-size: 13px; letter-spacing: 0.5px;
-      animation: marquee 18s linear infinite;
+    .deal-card {
+      background: linear-gradient(135deg, #fff7ed, #ffffff);
+      border: 2px solid #ff9f00; border-radius: 12px; padding: 12px;
+      position: relative; box-shadow: 0 4px 15px rgba(255, 159, 0, 0.15);
+      overflow: hidden;
     }
-    .marquee-container:hover .marquee-content { animation-play-state: paused; }
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
+    .deal-badge {
+      position: absolute; top: 0; left: 0; background: #ff6100; color: #fff;
+      font-size: 10px; font-weight: 800; padding: 4px 10px;
+      border-bottom-right-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .deal-content {
+      display: flex; align-items: center; gap: 12px; margin-top: 14px;
+    }
+    .deal-image-box {
+      position: relative; width: 95px; height: 95px; flex-shrink: 0;
+      background: #fff; border-radius: 8px; padding: 4px; border: 1px solid #fed7aa;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .deal-image-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .discount-tag {
+      position: absolute; bottom: 2px; right: 2px; background: #22c55e;
+      color: #fff; font-size: 9px; font-weight: 800; padding: 2px 5px; border-radius: 4px;
+    }
+    .deal-details { flex-grow: 1; }
+    .deal-details h3 { font-size: 15px; color: #0f172a; margin-bottom: 2px; line-height: 1.2; font-weight: 800; }
+    .deal-details p { font-size: 11px; color: #64748b; margin-bottom: 6px; line-height: 1.3; }
+    .price-box { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .special-price { font-size: 17px; font-weight: 900; color: #2563eb; }
+    .original-price { font-size: 12px; color: #94a3b8; text-decoration: line-through; }
+    .deal-btn {
+      background: #f97316; color: white; border: none; padding: 6px 12px;
+      border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 11px;
     }
 
     /* Search Bar */
@@ -230,16 +254,46 @@
       <button class="tab-btn" onclick="switchAdminTab('backupTab', this)"><i class="fa-solid fa-database"></i> Backup & QR</button>
     </div>
 
-    <!-- Tab 1: Add/Edit Machine & Running Offer Control -->
+    <!-- Tab 1: Add/Edit Machine & Flipkart Offer Banner Manager -->
     <div class="admin-section active" id="addMachineTab">
       
-      <!-- Live Running Offer Manager Box -->
+      <!-- Live Flipkart Offer Deal Manager Box -->
       <div class="offer-admin-box">
-        <h4><i class="fa-solid fa-bullhorn"></i> Running Offer / Deal Announcement</h4>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="offerTextInput" placeholder="e.g. 🔥 SPECIAL FESTIVE OFFER: UP TO 20% OFF ON ALL HIGH PRESSURE WASHERS THIS WEEK! 🔥">
-          <button class="btn btn-add" style="flex: 0 0 120px;" onclick="updateRunningOffer()"><i class="fa-solid fa-check"></i> Update Text</button>
+        <h4><i class="fa-solid fa-bolt"></i> Flipkart-Style "Deal of the Day" Offer Manager</h4>
+        <div class="form-grid">
+          <div>
+            <label>Enable Offer Banner?</label>
+            <select id="dealActiveInput">
+              <option value="true">Yes - Show Banner</option>
+              <option value="false">No - Hide Banner</option>
+            </select>
+          </div>
+          <div>
+            <label>Offer Title / Machine Name</label>
+            <input type="text" id="dealTitleInput" placeholder="e.g. LAHARI High Pressure Washer 3000W">
+          </div>
+          <div>
+            <label>Discount Tag</label>
+            <input type="text" id="dealDiscountInput" placeholder="e.g. 25% OFF">
+          </div>
+          <div>
+            <label>Offer Price (Special)</label>
+            <input type="text" id="dealPriceInput" placeholder="e.g. ₹14,999">
+          </div>
+          <div>
+            <label>Original Price</label>
+            <input type="text" id="dealOldPriceInput" placeholder="e.g. ₹19,999">
+          </div>
+          <div>
+            <label>Offer Image Photo</label>
+            <input type="file" id="dealImgUpload" accept="image/*">
+          </div>
+          <div style="grid-column: span 2;">
+            <label>Offer Description / Bonus Details</label>
+            <input type="text" id="dealDescInput" placeholder="e.g. Special festive offer! Includes free hose pipe & nozzle set.">
+          </div>
         </div>
+        <button class="btn btn-deal" onclick="saveDealOffer()"><i class="fa-solid fa-floppy-disk"></i> Save & Update Flipkart Deal Banner</button>
       </div>
 
       <h2 id="formTitle" style="color:#1e3a8a; font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-plus"></i> Add New Machine</h2>
@@ -306,7 +360,7 @@
     </div>
   </div>
 
-  <!-- Header Banner (BIGGER HEADING) -->
+  <!-- Shop Header -->
   <div class="shop-header">
     <div class="logo-box">
       <img src="https://i.postimg.cc/y63P1pWX/86480.jpg" alt="Logo 1">
@@ -323,10 +377,25 @@
     </div>
   </div>
 
-  <!-- Continuous Running Offer Marquee Banner -->
-  <div class="marquee-container" id="marqueeContainer">
-    <div class="marquee-content" id="marqueeText">
-      🔥 WELCOME TO SRI VINAYAKA POWER TOOLS - AUTHORIZED SALES & SERVICE 🔥
+  <!-- Flipkart-Style Deal Banner -->
+  <div id="dealSection" class="deal-card-container">
+    <div class="deal-card">
+      <div class="deal-badge"><i class="fa-solid fa-fire"></i> Deal of the Day</div>
+      <div class="deal-content">
+        <div class="deal-image-box">
+          <img id="dealImage" src="" alt="Deal Machine">
+          <span class="discount-tag" id="dealDiscount">25% OFF</span>
+        </div>
+        <div class="deal-details">
+          <h3 id="dealTitle">Machine Name</h3>
+          <p id="dealDesc">Special offer details go here...</p>
+          <div class="price-box">
+            <span class="special-price" id="dealPrice">₹14,999</span>
+            <span class="original-price" id="dealOldPrice">₹19,999</span>
+          </div>
+          <button class="deal-btn" onclick="scrollToCatalog()"><i class="fa-solid fa-bag-shopping"></i> Grab Deal Now</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -362,7 +431,28 @@
   </div>
 
   <script>
-    let productsList = [];
+    // HARDCODED DEFAULT MACHINES ARRAY - ADD YOUR MACHINES HERE!
+    let productsList = [
+      {
+        id: 1,
+        category: "Pressure Washers",
+        code: "LAHP-34",
+        name: "LAHARI High Pressure Washer",
+        img: "https://via.placeholder.com/300x300?text=Pressure+Washer",
+        desc: "Power Output: 3000 W\nVoltage: 220V\nPressure: 50 - 300 Bar",
+        video: ""
+      },
+      {
+        id: 2,
+        category: "Drilling Machines",
+        code: "DRL-01",
+        name: "Heavy Duty Impact Drill",
+        img: "https://via.placeholder.com/300x300?text=Impact+Drill",
+        desc: "Power Output: 850 W\nChuck Size: 13mm",
+        video: ""
+      }
+    ];
+
     let categoriesList = [
       { name: 'Pressure Washers', desc: 'High-pressure washers for domestic, commercial and heavy car-wash cleaning.' },
       { name: 'Drilling Machines', desc: 'Heavy-duty impact drills, rotary hammer drills and cordless drivers.' },
@@ -371,7 +461,18 @@
       { name: 'Air Compressors', desc: 'Silent & oil-free air compressors for pneumatic tools.' }
     ];
 
+    let currentDeal = {
+      active: true,
+      title: "LAHARI High Pressure Washer 3000W",
+      desc: "Special festive deal! Free high pressure hose & brass nozzle included.",
+      img: "https://via.placeholder.com/300x300?text=Deal+Machine",
+      discount: "25% OFF",
+      specialPrice: "₹14,999",
+      originalPrice: "₹19,999"
+    };
+
     let currentUploadedProductImg = "";
+    let currentUploadedDealImg = "";
     let activeCategory = "All";
     let synth = window.speechSynthesis;
 
@@ -387,6 +488,15 @@
       }
     });
 
+    document.getElementById('dealImgUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) { currentUploadedDealImg = evt.target.result; };
+        reader.readAsDataURL(file);
+      }
+    });
+
     window.onload = function() {
       loadSavedData();
       if (isCustomerMode) {
@@ -395,12 +505,48 @@
       }
     };
 
-    function updateRunningOffer() {
-      const val = document.getElementById('offerTextInput').value.trim();
-      if (val) {
-        document.getElementById('marqueeText').innerHTML = val;
-        localStorage.setItem('svpt_deal_text', val);
-        alert('Running offer announcement updated!');
+    function saveDealOffer() {
+      currentDeal.active = document.getElementById('dealActiveInput').value === 'true';
+      currentDeal.title = document.getElementById('dealTitleInput').value.trim() || 'Special Machine Deal';
+      currentDeal.discount = document.getElementById('dealDiscountInput').value.trim() || 'SPECIAL OFFER';
+      currentDeal.specialPrice = document.getElementById('dealPriceInput').value.trim() || '';
+      currentDeal.originalPrice = document.getElementById('dealOldPriceInput').value.trim() || '';
+      currentDeal.desc = document.getElementById('dealDescInput').value.trim() || '';
+      
+      if (currentUploadedDealImg) {
+        currentDeal.img = currentUploadedDealImg;
+      }
+
+      localStorage.setItem('svpt_deal_offer', JSON.stringify(currentDeal));
+      renderDealBanner();
+      alert('Flipkart-Style Deal Banner updated!');
+    }
+
+    function renderDealBanner() {
+      const dealContainer = document.getElementById('dealSection');
+      if (currentDeal && currentDeal.active) {
+        dealContainer.style.display = 'block';
+        document.getElementById('dealTitle').innerText = currentDeal.title;
+        document.getElementById('dealDesc').innerText = currentDeal.desc;
+        document.getElementById('dealDiscount').innerText = currentDeal.discount;
+        document.getElementById('dealPrice').innerText = currentDeal.specialPrice;
+        document.getElementById('dealOldPrice').innerText = currentDeal.originalPrice;
+        if (currentDeal.img) {
+          document.getElementById('dealImage').src = currentDeal.img;
+        }
+      } else {
+        dealContainer.style.display = 'none';
+      }
+    }
+
+    function populateDealAdminFields() {
+      if (currentDeal) {
+        document.getElementById('dealActiveInput').value = currentDeal.active ? 'true' : 'false';
+        document.getElementById('dealTitleInput').value = currentDeal.title || '';
+        document.getElementById('dealDiscountInput').value = currentDeal.discount || '';
+        document.getElementById('dealPriceInput').value = currentDeal.specialPrice || '';
+        document.getElementById('dealOldPriceInput').value = currentDeal.originalPrice || '';
+        document.getElementById('dealDescInput').value = currentDeal.desc || '';
       }
     }
 
@@ -437,7 +583,7 @@
           category: category,
           code: code,
           name: name,
-          img: currentUploadedProductImg || 'https://via.placeholder.com/300x300?text=Upload+Photo',
+          img: currentUploadedProductImg || 'https://via.placeholder.com/300x300?text=Machine+Photo',
           desc: desc,
           video: video
         };
@@ -675,6 +821,10 @@
       document.getElementById('detailModal').style.display = 'none';
     }
 
+    function scrollToCatalog() {
+      document.getElementById('searchInput').scrollIntoView({ behavior: 'smooth' });
+    }
+
     function toggleCustomerPreview() {
       const currentUrl = new URL(window.location.href);
       if (isCustomerMode) {
@@ -688,8 +838,15 @@
     function showQRCode() {
       const qrDiv = document.getElementById('qrcode');
       qrDiv.innerHTML = '';
-      const currentUrl = window.location.href.split('?')[0] + '?mode=customer';
-      new QRCode(qrDiv, { text: currentUrl, width: 160, height: 160 });
+      
+      let currentUrl = window.location.href.split('?')[0];
+
+      if (currentUrl.startsWith('file://')) {
+        alert("⚠️ Local File Notice:\nQR codes open on other devices when hosted live (like GitHub Pages/Netlify) or on local Wi-Fi IP.");
+      }
+
+      const customerUrl = currentUrl + '?mode=customer';
+      new QRCode(qrDiv, { text: customerUrl, width: 160, height: 160 });
       document.getElementById('qrModal').style.display = 'flex';
     }
 
@@ -701,7 +858,7 @@
       const backupData = {
         products: productsList,
         categories: categoriesList,
-        deal: localStorage.getItem('svpt_deal_text') || ''
+        deal: currentDeal
       };
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
       const downloadAnchor = document.createElement('a');
@@ -732,9 +889,10 @@
             localStorage.setItem('svpt_categories', JSON.stringify(categoriesList));
           }
           if (importedData.deal) {
-            localStorage.setItem('svpt_deal_text', importedData.deal);
-            document.getElementById('marqueeText').innerHTML = importedData.deal;
-            document.getElementById('offerTextInput').value = importedData.deal;
+            currentDeal = importedData.deal;
+            localStorage.setItem('svpt_deal_offer', JSON.stringify(currentDeal));
+            renderDealBanner();
+            populateDealAdminFields();
           }
           populateCategoryDropdown();
           renderCategoryChips();
@@ -748,11 +906,9 @@
     }
 
     function clearAllData() {
-      if (confirm("Are you sure you want to clear all added machines and data?")) {
+      if (confirm("Are you sure you want to clear all added machines and reset to defaults?")) {
         localStorage.clear();
-        productsList = [];
-        renderProducts();
-        alert('All data reset successfully.');
+        location.reload();
       }
     }
 
@@ -764,14 +920,17 @@
       renderCategoryChips();
 
       const savedProducts = JSON.parse(localStorage.getItem('svpt_smart_catalog'));
-      if (savedProducts) productsList = savedProducts;
-
-      const savedDeal = localStorage.getItem('svpt_deal_text');
-      if (savedDeal) {
-        document.getElementById('marqueeText').innerHTML = savedDeal;
-        document.getElementById('offerTextInput').value = savedDeal;
+      if (savedProducts && savedProducts.length > 0) {
+        productsList = savedProducts;
       }
 
+      const savedDeal = JSON.parse(localStorage.getItem('svpt_deal_offer'));
+      if (savedDeal) {
+        currentDeal = savedDeal;
+      }
+
+      renderDealBanner();
+      populateDealAdminFields();
       renderProducts();
     }
 
